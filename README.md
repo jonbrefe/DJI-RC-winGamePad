@@ -184,10 +184,13 @@ Stop the adapter with `Ctrl+C`. Held movement keys are released automatically.
 
 ## Citations
 
+- Original project (Apache-2.0): https://github.com/AppStudioLB/DJI_RC-N1_winGamePad
 - https://github.com/IvanYaky/DJI_RC-N1_SIMULATOR_FLY_DCL
 - https://github.com/learncodebygaming/pydirectinput
 
 ## License
 
-Licensed under the Apache License 2.0. This fork retains the original license and
-attribution; modified files are identified as required by the license.
+Licensed under the Apache License 2.0. This project is derived from
+[AppStudioLB/DJI_RC-N1_winGamePad](https://github.com/AppStudioLB/DJI_RC-N1_winGamePad);
+it retains the original license and attribution, and modified files are identified as
+required by the license.
