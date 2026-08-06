@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dji-rc-wingamepad"
+version = "0.1.0"
+description = "Use a DJI RC-N1/N3 remote controller as a Windows gamepad or keyboard/mouse."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Apache-2.0" }
+authors = [{ name = "DJI_RC-N1_winGamePad contributors" }]
+keywords = ["dji", "rc-n1", "rc-n3", "gamepad", "vgamepad", "duml", "controller", "simulator"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: Microsoft :: Windows",
+    "Topic :: Games/Entertainment",
+    "Topic :: System :: Hardware :: Hardware Drivers",
+]
+dependencies = ["pyserial>=3.5"]
+
+[project.optional-dependencies]
+# Virtual Xbox gamepad backend (default). Windows-only; also needs the ViGEmBus driver.
+gamepad = ["vgamepad>=0.1.0; platform_system == 'Windows'"]
+# Keyboard/mouse backends.
+keyboard = ["pydirectinput>=1.0.4", "pynput>=1.7.6"]
+all = [
+    "vgamepad>=0.1.0; platform_system == 'Windows'",
+    "pydirectinput>=1.0.4",
+    "pynput>=1.7.6",
+]
+dev = ["pytest>=7", "ruff>=0.4"]
+# Build the standalone Windows .exe (see DJI-RC-winGamePad.spec).
+build = ["pyinstaller>=6"]
+
+[project.scripts]
+djirc-run = "main:main"
+djirc-test = "test_control:main"
+
+[tool.setuptools]
+packages = ["djirc"]
+py-modules = ["main", "test_control"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]

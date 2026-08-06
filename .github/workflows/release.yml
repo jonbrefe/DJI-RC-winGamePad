@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows-exe:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install package with all backends and build tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[all,build]"
+      - name: Build one-folder bundle
+        run: python -m PyInstaller --clean --noconfirm DJI-RC-winGamePad.spec
+      - name: Zip bundle and generate SHA-256
+        shell: pwsh
+        run: |
+          $zip = "dist/DJI-RC-winGamePad-${{ github.ref_name }}.zip"
+          Compress-Archive -Path dist/DJI-RC-winGamePad/* -DestinationPath $zip -Force
+          $hash = (Get-FileHash $zip -Algorithm SHA256).Hash.ToLower()
+          "$hash  $(Split-Path $zip -Leaf)" | Out-File -Encoding ascii "$zip.sha256"
+      - name: Extract release notes from CHANGELOG.md
+        shell: pwsh
+        run: |
+          $ver = "${{ github.ref_name }}" -replace '^v', ''
+          $content = Get-Content -Raw CHANGELOG.md
+          $pattern = "(?ms)^##\s*\[$([regex]::Escape($ver))\].*?(?=^##\s*\[|\z)"
+          $m = [regex]::Match($content, $pattern)
+          if (-not $m.Success) {
+            $m = [regex]::Match($content, "(?ms)^##\s*\[Unreleased\].*?(?=^##\s*\[|\z)")
+          }
+          $notes = if ($m.Success) { $m.Value.Trim() } else { "Release ${{ github.ref_name }}" }
+          Set-Content -Path release_notes.md -Value $notes -Encoding utf8
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DJI-RC-winGamePad
+          path: |
+            dist/DJI-RC-winGamePad-*.zip
+            dist/DJI-RC-winGamePad-*.zip.sha256
+      - name: Attach zip and checksum to the GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release_notes.md
+          files: |
+            dist/DJI-RC-winGamePad-*.zip
+            dist/DJI-RC-winGamePad-*.zip.sha256
+            dist/DJI-RC-winGamePad-test.exe.sha256

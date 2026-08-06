@@ -1,0 +1,4 @@
+pyserial>=3.5
+pydirectinput>=1.0.4
+pynput>=1.7.6
+vgamepad>=0.1.0
