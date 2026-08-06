@@ -18,15 +18,26 @@ Download `DJI-RC-winGamePad-<version>.zip` from the [Releases](../../releases) p
 extract it anywhere, and run `DJI-RC-winGamePad.exe` from the extracted folder.
 You still need the device drivers below, since a binary can't replace them:
 
-- The **DJI USB VCOM** driver (creates the serial port) - see step 1 below or
-  [DRIVER_INSTALL.md](DRIVER_INSTALL.md). Always required.
-- The **ViGEmBus** driver, only for the default `vgamepad` backend. If it's missing,
-  the app prints the exact installer command to run.
+- Install **[DJI Assistant 2 (Consumer Drones Series)](https://www.dji.com/downloads/softwares/dji-assistant-2-consumer-drones-series)**,
+  then close it. This is the recommended way to install the required DJI USB VCOM
+  driver. To install only that driver instead, follow [DRIVER_INSTALL.md](DRIVER_INSTALL.md).
+- **[ViGEmBus 1.22.0](https://github.com/nefarius/ViGEmBus/releases/download/v1.22.0/ViGEmBus_1.22.0_x64_x86_arm64.exe)**
+  is required for the default `vgamepad` mode. Download and run that installer once;
+  it automatically selects the correct Windows architecture. The `directinput` and
+  `pynput` modes do not require ViGEmBus.
 
-> It's a one-folder app (the `.exe` sits next to its runtime DLLs), which avoids the
-> temp-extraction that some managed machines (Smart App Control / WDAC) block. Keep the
-> folder contents together. Windows SmartScreen may still warn about the unsigned exe -
-> click **More info -> Run anyway**, or use the Python install below.
+> It's a one-folder app (the `.exe` sits next to its runtime DLLs), which avoids blocked
+> `%TEMP%` DLL extraction. Keep the folder contents together. Windows SmartScreen may
+> warn about the unsigned executable; click **More info -> Run anyway** when that option
+> is available.
+>
+> **Smart App Control warning:** On some Windows 11 devices, including a tested ROG Xbox
+> Ally, Smart App Control can block this unsigned executable without offering **Run
+> anyway**. Do not disable Smart App Control casually: turning it off reduces system-wide
+> protection, and Windows may require a reset or reinstall before it can be enabled again.
+> Prefer the Python installation below if the executable is blocked. If you choose to
+> disable Smart App Control, first verify the ZIP against its `.sha256` file and understand
+> the Windows security implications.
 
 Run it from a terminal to pass flags, e.g. `.\DJI-RC-winGamePad.exe --backend directinput`.
 The folder also includes `DJI-RC-winGamePad-test.exe` - the controller tester (opens a
@@ -47,20 +58,15 @@ window, injects no input) for verifying the controller and driver before use.
 python -m pip install -r requirements.txt
 ```
 
-   The default `vgamepad` backend needs the open-source **ViGEmBus** virtual-gamepad
-   driver (unrelated to DJI). Installing `vgamepad` (via the command above) also runs
-   the ViGEmBus installer; accept the UAC prompt. If it was skipped (e.g. non-admin or
-   Microsoft Store Python), run the bundled installer once, elevated. This finds the
-   installer automatically, so you don't need to locate your Python folder:
+  This installs `pyserial` plus the modules for every included input backend:
+  `vgamepad`, `pydirectinput`, and `pynput`.
 
-```powershell
-$msi = python -c "import os, vgamepad; print(os.path.join(os.path.dirname(vgamepad.__file__),'win','vigem','install','x64','ViGEmBusSetup_x64.msi'))"
-Start-Process msiexec.exe -ArgumentList "/i `"$msi`"" -Verb RunAs -Wait
-```
-
-   If the driver is missing, `python main.py` prints the exact path to run. You can
-   verify the virtual pad afterwards with `joy.cpl` (Set up USB game controllers).
-   The `directinput` and `pynput` backends do not need ViGEmBus.
+  The default `vgamepad` backend requires the open-source
+  **[ViGEmBus 1.22.0 installer](https://github.com/nefarius/ViGEmBus/releases/download/v1.22.0/ViGEmBus_1.22.0_x64_x86_arm64.exe)**
+  (unrelated to DJI). Download and run the `.exe` once, accepting the UAC prompt; it
+  automatically selects the correct Windows architecture. You can verify the virtual
+  pad afterwards with `joy.cpl` (Set up USB game controllers). The `directinput` and
+  `pynput` backends do not need ViGEmBus.
 
 4. Power on the RC-N1 or N3 and connect its bottom USB-C port.
 5. Start the adapter, then start the game:

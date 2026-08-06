@@ -1,11 +1,20 @@
 # Installing the DJI RC-N1/N3 VCOM Driver Manually
 
-This project only needs **one** driver: the DJI **USB VCOM** driver that creates the
-serial (COM) port named `... USB VCOM For Protocol`. The code opens that port and reads
-stick data from it. No other driver in the DJI Assistant 2 package is required.
+This guide covers the DJI **USB VCOM** driver that creates the serial (COM) port named
+`... USB VCOM For Protocol`. The code opens that port and reads stick data from it. No
+other driver in the DJI Assistant 2 package is required.
 
-You do **not** need to run the DJI Assistant 2 installer to get this driver. You can
-extract just the driver files and install them manually.
+For most users, the recommended and simplest option is to install
+**[DJI Assistant 2 (Consumer Drones Series)](https://www.dji.com/downloads/softwares/dji-assistant-2-consumer-drones-series)**
+and then close it. Use this guide only if you prefer to extract and install the VCOM
+driver without installing the full DJI application.
+
+The default `vgamepad` mode separately requires the
+**[ViGEmBus 1.22.0 installer](https://github.com/nefarius/ViGEmBus/releases/download/v1.22.0/ViGEmBus_1.22.0_x64_x86_arm64.exe)**.
+Download and run that `.exe` once. It is unrelated to DJI and is not needed when using
+the `directinput` or `pynput` modes.
+
+You can extract just the driver files and install them manually as described below.
 
 ---
 

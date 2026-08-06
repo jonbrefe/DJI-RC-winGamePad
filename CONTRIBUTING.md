@@ -14,8 +14,9 @@ pip install -e ".[dev,all]"
 - `pip install -e .` installs the `djirc` library plus the `djirc-run` / `djirc-test`
   console scripts in editable mode.
 - The `dev` extra adds `pytest` and `ruff`; `all` adds every input backend.
-- The `vgamepad` backend is Windows-only and also needs the **ViGEmBus** driver — see
-  the README and [DRIVER_INSTALL.md](DRIVER_INSTALL.md).
+- The default `vgamepad` backend is Windows-only and requires the
+  **[ViGEmBus 1.22.0 installer](https://github.com/nefarius/ViGEmBus/releases/download/v1.22.0/ViGEmBus_1.22.0_x64_x86_arm64.exe)**.
+  The `directinput` and `pynput` backends do not require it.
 
 ## Running tests
 
@@ -41,10 +42,11 @@ python -m PyInstaller --clean --noconfirm DJI-RC-winGamePad.spec
 
 The result is `dist/DJI-RC-winGamePad/` - a one-folder bundle containing both
 `DJI-RC-winGamePad.exe` (the adapter) and `DJI-RC-winGamePad-test.exe` (the tester)
-sharing one runtime (one-folder avoids the `%TEMP%` DLL extraction that Smart App Control
-/ WDAC can block). Pushing a `v*` tag zips this folder and attaches it, with a SHA-256
-checksum, to a GitHub Release (see `.github/workflows/release.yml`). The build still
-requires the VCOM and (for `vgamepad`) ViGEmBus drivers on the target machine.
+sharing one runtime. The one-folder layout avoids `%TEMP%` DLL extraction, but Smart App
+Control or WDAC can still block the unsigned executable itself. Pushing a `v*` tag zips
+this folder and attaches it, with a SHA-256 checksum, to a GitHub Release (see
+`.github/workflows/release.yml`). The build still requires the VCOM driver and, for the
+default `vgamepad` mode, the ViGEmBus 1.22.0 installer executable on the target machine.
 
 ## Testing with real hardware
 
